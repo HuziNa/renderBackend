@@ -20,6 +20,10 @@ const bookingSchema = new mongoose.Schema({
   bookingDate: { type: Date, required: true },
   startTime: String,
   endTime: String,
+  durationMinutes: {
+    type: Number,
+    required: true
+  },
   totalAmount: Number,
   payment: {
     proof: String,
@@ -36,6 +40,8 @@ const bookingSchema = new mongoose.Schema({
     applied: { type: Boolean, default: false },
     duration: { type: Number, default: 30 }
   },
+  isGuest: { type: Boolean, default: false }, // added guest bool
+
   guestInfo: {
     name: String,
     email: String,
