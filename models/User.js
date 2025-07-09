@@ -33,6 +33,17 @@ const userSchema = new mongoose.Schema({
   isGuest: { type: Boolean, default: false },
   guestSession: String,
   phone: String,
+  location: {
+    address: String,
+    city: String,
+    state: String,
+    country: String,
+    postalCode: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    }
+  },
   notifications: {
     email: { type: Boolean, default: true }
   },
