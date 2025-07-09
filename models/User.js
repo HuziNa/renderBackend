@@ -1,69 +1,55 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const userSchema = new mongoose.Schema(
-  {
-    google: {
-      id: { type: String, sparse: true, unique: true },
-      avatar: String,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-    },
-    password: {
-      type: String,
-      required: function () {
-        return !this.google?.id;
-      },
-    },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    role: { type: String, default: "client" }, // Remove enum for flexibility
-    isActive: { type: Boolean, default: true },
-    cooldown: {
-      until: { type: Date, default: null },
-      reason: String,
-    },
-    isGuest: { type: Boolean, default: false },
-    guestSession: String,
-    phone: String,
-    location: {
-      address: String,
-      city: String,
-      state: String,
-      country: String,
-      postalCode: String,
-      coordinates: {
-        latitude: Number,
-        longitude: Number,
-      },
-    },
-    notifications: {
-      email: { type: Boolean, default: true },
-    },
-    verification: {
-      email: { type: Boolean, default: false },
-      token: String,
-      expires: Date,
-    },
-    passwordReset: {
-      token: String,
-      expires: Date,
-    },
-    lastLogin: Date,
-    loginAttempts: { type: Number, default: 0 },
-    lockUntil: Date,
-    meta: mongoose.Schema.Types.Mixed,
+const userSchema = new mongoose.Schema({
+  google: {
+    id: { type: String, sparse: true, unique: true },
+    avatar: String
   },
-  { timestamps: true }
-);
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true
+  },
+  password: {
+    type: String,
+    required: function() {
+      return !this.google?.id;
+    }
+  },
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  role: { type: String, default: 'client' }, // Remove enum for flexibility
+  isActive: { type: Boolean, default: true },
+  cooldown: {
+    until: { type: Date, default: null },
+    reason: String
+  },
+  isGuest: { type: Boolean, default: false },
+  guestSession: String,
+  phone: String,
+  notifications: {
+    email: { type: Boolean, default: true }
+  },
+  verification: {
+    email: { type: Boolean, default: false },
+    token: String,
+    expires: Date
+  },
+  passwordReset: {
+    token: String,
+    expires: Date
+  },
+  lastLogin: Date,
+  loginAttempts: { type: Number, default: 0 },
+  lockUntil: Date,
+  meta: mongoose.Schema.Types.Mixed
+}, { timestamps: true });
 
 userSchema.index({ email: 1 });
 userSchema.index({ role: 1 });
