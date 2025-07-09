@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   google: {
@@ -33,6 +33,17 @@ const userSchema = new mongoose.Schema({
   isGuest: { type: Boolean, default: false },
   guestSession: String,
   phone: String,
+  location: {
+    address: String,
+    city: String,
+    state: String,
+    country: String,
+    postalCode: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    }
+  },
   notifications: {
     email: { type: Boolean, default: true }
   },
@@ -53,15 +64,15 @@ const userSchema = new mongoose.Schema({
 
 userSchema.index({ email: 1 });
 userSchema.index({ role: 1 });
-userSchema.index({ "cooldown.until": 1 });
+userSchema.index({ 'cooldown.until': 1 });
 userSchema.index({ isActive: 1 });
 
-userSchema.virtual("isLocked").get(function () {
+userSchema.virtual('isLocked').get(function() {
   return !!(this.lockUntil && this.lockUntil > Date.now());
 });
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password") || this.google?.id) {
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password') || this.google?.id) {
     return next();
   }
   try {
@@ -73,12 +84,12 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-userSchema.methods.comparePassword = async function (candidatePassword) {
+userSchema.methods.comparePassword = async function(candidatePassword) {
   if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.toJSON = function () {
+userSchema.methods.toJSON = function() {
   const user = this.toObject();
   delete user.password;
   delete user.passwordReset;
@@ -86,4 +97,4 @@ userSchema.methods.toJSON = function () {
   return user;
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);
