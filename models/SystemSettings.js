@@ -2,14 +2,11 @@ const mongoose = require('mongoose');
 
 const systemSettingsSchema = new mongoose.Schema({
   key: { type: String, required: true, unique: true },
-  value: { type: mongoose.Schema.Types.Mixed, required: true },
-  description: { type: String, default: '' },
-  category: {
-    type: String,
-    enum: ['booking', 'payment', 'notification', 'security', 'general'],
-    required: true
-  },
-  isActive: { type: Boolean, default: true }
+  value: mongoose.Schema.Types.Mixed,
+  description: String,
+  category: String, // Remove enum for flexibility
+  isActive: { type: Boolean, default: true },
+  meta: mongoose.Schema.Types.Mixed
 }, { timestamps: true });
 
 systemSettingsSchema.index({ key: 1 });
