@@ -38,31 +38,12 @@ const companySchema = new mongoose.Schema({
     by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     at: Date
   },
-  isActive: { type: Boolean, default: true },
-  bankDetails: {
-    accountName: String,
-    accountNumber: String,
-    bankName: String,
-    branchCode: String,
-    iban: String
-  },
-  businessInfo: {
-    registrationNumber: String,
-    taxNumber: String,
-    businessType: String
-  },
-  documents: {
-    businessLicense: String,
-    identityCard: String,
-    bankStatement: String
-  },
+  isActive: { type: Boolean, default: false },
   images: {
     logo: String,
     coverImage: String,
     gallery: [{ url: String, caption: String }]
   },
-  operatingHours: mongoose.Schema.Types.Mixed,
-  rating: { type: Number, default: 0 },
   meta: mongoose.Schema.Types.Mixed
 }, { timestamps: true });
 
