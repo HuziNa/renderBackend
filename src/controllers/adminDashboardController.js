@@ -34,7 +34,7 @@ exports.getAdminDashboardStats = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("❌ Error fetching admin dashboard stats:", err);
+    console.error("Error fetching admin dashboard stats:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };

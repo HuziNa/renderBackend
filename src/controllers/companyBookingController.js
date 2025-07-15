@@ -101,9 +101,9 @@ const confirmBookingByCompany = async (req, res) => {
         relatedCompany: company._id
       });
 
-      console.log("✅ Confirmation email sent to:", userEmail);
+      console.log(" Confirmation email sent to:", userEmail);
     } else {
-      console.log("⚠️ No email found to send confirmation.");
+      console.log(" No email found to send confirmation.");
     }
 
     return res.status(200).json({
@@ -112,7 +112,7 @@ const confirmBookingByCompany = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ Error confirming booking:", error);
+    console.error(" Error confirming booking:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

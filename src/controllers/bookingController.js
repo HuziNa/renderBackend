@@ -12,11 +12,11 @@ const createBooking = async (req, res) => {
     const { slotId, guestInfo, specialRequests } = req.body;
     const user = req.user;
 
-    console.log("🟢 Starting booking creation...");
+    console.log(" Starting booking creation...");
 
     // 1. Validate slot
     const slot = await Slot.findById(slotId);
-    console.log("✅ Slot:", slot);
+    console.log(" Slot:", slot);
     if (!slot) {
       return res.status(404).json({ message: "Slot not found or inactive" });
     }
@@ -26,35 +26,35 @@ const createBooking = async (req, res) => {
       slot: slotId,
       status: { $in: ["pending", "confirmed"] },
     });
-    console.log("✅ Existing booking:", existingBooking);
+    console.log("Existing booking:", existingBooking);
     if (existingBooking) {
       return res.status(409).json({ message: "Slot already booked" });
     }
 
     // 3. Get ground, sport and company
     const ground = await Ground.findById(slot.ground._id);
-    console.log("✅ Ground:", ground);
+    console.log(" Ground:", ground);
 
     if (!ground) {
       return res.status(404).json({ message: "Ground not found" });
     }
 
     const sport = await Sport.findById(ground.sport._id);
-    console.log("✅ Sport:", sport);
+    console.log(" Sport:", sport);
 
     if (!sport) {
       return res.status(404).json({ message: "Sport not found" });
     }
 
     const company = await Company.findById(ground.company._id);
-    console.log("✅ Company:", company);
+    console.log(" Company:", company);
 
     if (!company) {
       return res.status(404).json({ message: "Company not found" });
     }
 
     const companyOwner = await User.findById(company.user._id);
-    console.log("✅ Company Owner:", companyOwner);
+    console.log(" Company Owner:", companyOwner);
 
     if (!companyOwner) {
       return res.status(404).json({ message: "Company owner not found" });
@@ -66,7 +66,7 @@ const createBooking = async (req, res) => {
       { $inc: { value: 1 } },
       { new: true, upsert: true }
     );
-    console.log("✅ Booking counter:", counter);
+    console.log(" Booking counter:", counter);
 
     // 5. Prepare booking data
     const bookingData = {
@@ -105,21 +105,20 @@ const createBooking = async (req, res) => {
       return res.status(400).json({ message: "User or guest info required" });
     }
 
-    console.log("✅ User info:", { userName, userEmail });
+    console.log(" User info:", { userName, userEmail });
 
     // 6. Create booking
     const booking = await Booking.create(bookingData);
-    console.log("✅ Booking created:", booking);
+    console.log(" Booking created:", booking);
 
     // 7. Mark slot as inactive
     slot.isActive = false;
     await slot.save();
-    console.log("✅ Slot marked inactive");
+    console.log(" Slot marked inactive");
 
     const slotDetails = `${ground.name} | ${slot.startTime} - ${slot.endTime}`;
     // 8. Compose slot details
-    console.log("✅ Slot details string:", slotDetails);
-
+    console.log(" Slot details string:", slotDetails)
     // 8. Compose slot details
     const slotDate = new Date(slot.date).toLocaleDateString("en-GB", {
       timeZone: "UTC",
@@ -153,12 +152,12 @@ const createBooking = async (req, res) => {
         relatedBooking: booking._id,
         relatedCompany: company._id,
       });
-      console.log("✅ Email sent to user");
+      console.log(" Email sent to user");
     }
 
     // 10. Send email to company owner
     if (companyOwner.email) {
-      console.log("📧 Sending email to company owner:", companyOwner.email);
+      console.log(" Sending email to company owner:", companyOwner.email);
       await sendTemplatedEmail({
         templateName: "notifyCompany.html",
         to: companyOwner.email,
@@ -177,12 +176,12 @@ const createBooking = async (req, res) => {
         relatedBooking: booking._id,
         relatedCompany: company._id,
       });
-      console.log("✅ Email sent to company owner");
+      console.log(" Email sent to company owner");
     }
 
     res.status(201).json({ message: "Booking created", booking });
   } catch (err) {
-    console.error("❌ Error creating booking:", err);
+    console.error(" Error creating booking:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };

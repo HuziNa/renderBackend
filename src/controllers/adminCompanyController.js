@@ -1,6 +1,6 @@
 const Company = require("../models/Company");
 
-// Get all companies (approved + not approved)
+// Get all companies 
 const getAllCompanies = async (req, res) => {
   try {
     const companies = await Company.find().sort({ createdAt: -1 });

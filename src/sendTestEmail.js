@@ -9,7 +9,7 @@ async function runTest() {
       useUnifiedTopology: true
     });
 
-    console.log("Connected to DB ✅");
+    console.log("Connected to DB ");
 
     const result = await sendTemplatedEmail({
       templateName: 'bookingConfirmation.html',

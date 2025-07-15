@@ -131,7 +131,7 @@ const registerCompany = async (req, res) => {
         name: newUser.name,
       },
       companyName,
-      isActive: false, // require admin approval maybe
+      isActive: false, // require admin approval 
     });
 
     const payload = {

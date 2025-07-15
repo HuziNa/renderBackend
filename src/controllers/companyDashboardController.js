@@ -17,7 +17,7 @@ exports.getTotalBookings = async (req, res) => {
     if (!companyId) return res.status(404).json({ message: "Company not found for this user." });
 
     const groundIds = await getCompanyGroundIds(companyId);
-    console.log("✅ Ground IDs:", groundIds);
+    console.log(" Ground IDs:", groundIds);
 
     const count = await Booking.countDocuments({
       $or: [
@@ -25,11 +25,11 @@ exports.getTotalBookings = async (req, res) => {
         { "ground._id": { $in: groundIds } }
       ]
     });
-    console.log("✅ Booking count:", count);
+    console.log(" Booking count:", count);
 
     res.json({ totalBookings: count });
   } catch (err) {
-    console.error("❌ Error getting total bookings:", err);
+    console.error(" Error getting total bookings:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -92,7 +92,7 @@ exports.getUpcomingBookingsCount = async (req, res) => {
       totalUpcoming
     });
   } catch (err) {
-    console.error("❌ Error getting booking counts:", err);
+    console.error(" Error getting booking counts:", err);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -113,10 +113,10 @@ exports.getTotalRevenue = async (req, res) => {
     ]);
 
     const totalRevenue = result[0]?.total || 0;
-    console.log(`✅ Total revenue for company ${companyId}:`, totalRevenue);
+    console.log(` Total revenue for company ${companyId}:`, totalRevenue);
     res.json({ totalRevenue });
   } catch (err) {
-    console.error("❌ Error getting total revenue:", err);
+    console.error(" Error getting total revenue:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -128,11 +128,11 @@ exports.getTotalGrounds = async (req, res) => {
     if (!companyId) return res.status(404).json({ message: "Company not found for this user." });
 
     const count = await Ground.countDocuments({ "company._id": companyId });
-    console.log(`✅ Total grounds for company ${companyId}:`, count);
+    console.log(` Total grounds for company ${companyId}:`, count);
 
     res.json({ totalGrounds: count });
   } catch (err) {
-    console.error("❌ Error getting total grounds:", err);
+    console.error(" Error getting total grounds:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -172,7 +172,7 @@ exports.getCompanyGroundsSummary = async (req, res) => {
     res.json(summary);
 
   } catch (err) {
-    console.error("❌ Error fetching company grounds summary:", err);
+    console.error(" Error fetching company grounds summary:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -202,7 +202,7 @@ exports.getAllCompanyBookings = async (req, res) => {
     res.json(formatted);
 
   } catch (err) {
-    console.error("❌ Error fetching company bookings:", err);
+    console.error(" Error fetching company bookings:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
