@@ -1,3 +1,4 @@
+// for getting all the bookings of a user and cancelling a booking with its id 
 const Booking = require("../models/Booking");
 const Slot = require("../models/Slot");
 

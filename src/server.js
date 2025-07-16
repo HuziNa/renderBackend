@@ -40,6 +40,7 @@ app.use("/api/company/bookings", require("./routes/companyBookings"));
 
 // admin company management 
 app.use("/api/admin/companies", require("./routes/adminCompanyRoutes"));
+
 app.use("/api/user", require("./routes/userBookings"));
 
 // getting all the grounds of a sport and city
@@ -50,6 +51,12 @@ app.use("/api/company/dashboard", require("./routes/companyDashboardRoutes"));
 
 // getting all the info for the admin dashboard
 app.use("/api/admin/dashboard", require("./routes/adminDashboard"));
+
+// changing the user info and stuff
+app.use("/api/user/update", require("./routes/userRoutes"));
+
+// payment proof
+app.use("/api/payment-proof", require("./routes/paymentProofRoutes"));
 
 mongoose
   .connect(process.env.MONGO_URI, {
