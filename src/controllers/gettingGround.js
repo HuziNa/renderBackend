@@ -1,5 +1,5 @@
 const Ground = require("../models/Ground");
-
+// getting the grounds of a sport and in a specific city
 const getGroundsByCityAndSport = async (req, res) => {
   try {
     const { city, sportName } = req.query; // or use req.body / req.params
