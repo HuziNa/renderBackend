@@ -6,11 +6,22 @@ dotenv.config();
 const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard"); // Protected example
 const bookingRoutes = require("./routes/booking");
-
+const cors = require("cors");
 const { verifyToken } = require("./middleware/authMiddleware"); // for protected routes
 const app = express();
 
+// deleting the old slots and making new ones 
+const cron = require("node-cron");
+const { updateSlotsDaily } = require("./controllers/slotTemplateController");
+
+cron.schedule("0 0 * * *", async () => {
+  console.log(" Running daily slot update job...");
+  await updateSlotsDaily();
+});
+
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", verifyToken, bookingRoutes);
 app.use("/api/dashboard", verifyToken, dashboardRoutes);
@@ -71,7 +82,8 @@ mongoose
       port: process.env.EMAIL_PORT,
       user: process.env.EMAIL_USER
     });
-    app.listen(5000, () => console.log("🚀 Server running on port 5000"));
+    const PORT = process.env.PORT || 5000; // ✅ Dynamic for Render
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch((err) => {
     console.error("❌ MongoDB connection failed:", err);
