@@ -45,7 +45,7 @@ app.use("/api/booking", require("./routes/booking"));
 const expireBookings = require("./jobs/expireBookings");
 setInterval(() => {
   expireBookings();
-}, 60 * 1000); // runs every 60 seconds
+}, 15 * 60 * 1000); // runs every 60 seconds
 
 // getting the bookings of a compnay
 app.use("/api/company/bookings", require("./routes/companyBookings"));
@@ -72,6 +72,15 @@ app.use("/api/payment-proof", require("./routes/paymentProofRoutes"));
 
 // this is the api for getting the grounds from sport, location and the date
 app.use("/api/grounds", require("./routes/groundsWithSlots"));
+
+// the api for the contact us page
+app.use("/api/contact", require("./routes/contactRoutes"));
+
+// this is for getting the reviews of a company and also posting a review
+app.use("/api/reviews", require("./routes/reviewRoutes"));
+
+// getting the latest grounds for the whats new page 
+app.use("/api/grounds", require("./routes/LatestgroundRoutes"));
 
 mongoose
   .connect(process.env.MONGO_URI, {

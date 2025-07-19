@@ -14,11 +14,6 @@ const reviewSchema = new mongoose.Schema({
   },
   rating: { type: Number, required: true, min: 1, max: 5 },
   comment: String,
-  isVisible: { type: Boolean, default: true },
-  companyResponse: {
-    message: String,
-    respondedAt: Date
-  },
   meta: mongoose.Schema.Types.Mixed
 }, { timestamps: true });
 
