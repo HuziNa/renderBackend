@@ -27,7 +27,11 @@ app.use(cookieParser());
 
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "https://sports-booking-frontend-sage.vercel.app", // only allow this domain
+  credentials: true 
+}));
+
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", verifyToken, bookingRoutes);

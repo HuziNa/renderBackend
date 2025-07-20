@@ -78,8 +78,8 @@ const loginClient = async (req, res) => {
   res
     .cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "None",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
     .status(200)
@@ -113,8 +113,8 @@ const registerClient = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict",
+        secure: true,
+        sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .status(201)
@@ -162,8 +162,8 @@ const registerCompany = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict",
+        secure: true,
+        sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .status(201)
@@ -197,8 +197,8 @@ const loginCompany = async (req, res) => {
   res
     .cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "None",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
     .status(200)
@@ -225,8 +225,8 @@ const loginAdmin = async (req, res) => {
   res
     .cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "None",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
     .status(200)
