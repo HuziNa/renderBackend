@@ -115,19 +115,29 @@ const createSlotTemplate = async (req, res) => {
 // Daily job: remove yesterday’s slots, add next day
 const updateSlotsDaily = async () => {
   try {
-    const yesterday = dayjs().subtract(1, "day").startOf("day");
+    const yesterday = dayjs().subtract(1, "day").endOf("day");
+
+    // Remove slots older than yesterday
     await Slot.deleteMany({ date: { $lt: yesterday.toDate() } });
 
     const templates = await SlotTemplate.find();
+
     for (const template of templates) {
       const ground = await Ground.findById(template.ground._id);
       const company = await Company.findById(template.company._id);
-      await generateSlotsForDate({ template, ground, company, date: dayjs().add(14, "day") });
+
+      // New date to generate: 14 days ahead from today
+      const nextDate = dayjs().add(14, "day");
+
+      await generateSlotsForDate({ template, ground, company, date: nextDate });
     }
+
+    console.log("✅ Daily slots updated");
   } catch (err) {
-    console.error("Daily slot update error:", err);
+    console.error("❌ Daily slot update error:", err);
   }
 };
+
 
 // When a template is edited
 const updateSlotTemplate = async (req, res) => {

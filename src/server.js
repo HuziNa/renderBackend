@@ -20,6 +20,12 @@ cron.schedule("0 0 * * *", async () => {
 });
 
 
+// new shit for the cookie system 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+
+
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -45,7 +51,7 @@ app.use("/api/booking", require("./routes/booking"));
 const expireBookings = require("./jobs/expireBookings");
 setInterval(() => {
   expireBookings();
-}, 15 * 60 * 1000); // runs every 60 seconds
+}, 15 * 60 * 1000); // runs every 15 minutes
 
 // getting the bookings of a compnay
 app.use("/api/company/bookings", require("./routes/companyBookings"));
@@ -79,7 +85,7 @@ app.use("/api/contact", require("./routes/contactRoutes"));
 // this is for getting the reviews of a company and also posting a review
 app.use("/api/reviews", require("./routes/reviewRoutes"));
 
-// getting the latest grounds for the whats new page 
+// getting the latest grounds for the whats new page and also the newest and seacrh by grounds
 app.use("/api/grounds", require("./routes/LatestgroundRoutes"));
 
 mongoose

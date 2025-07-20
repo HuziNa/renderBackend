@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const { generateToken } = require("../utils/jwt");
 const { User, Company } = require("../models");
 const supabase = require("../utils/supabase");
+const jwt = require("jsonwebtoken");
 
 const supabaseCallback = async (req, res) => {
   const { access_token } = req.query;
@@ -74,7 +75,15 @@ const loginClient = async (req, res) => {
   };
 
   const token = generateToken(payload);
-  res.status(200).json({ token, role: user.role });
+  res
+    .cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
+    .status(200)
+    .json({ role: user.role });
 };
 
 // ---------- CLIENT REGISTER ----------
@@ -101,7 +110,15 @@ const registerClient = async (req, res) => {
     };
 
     const token = generateToken(payload);
-    res.status(201).json({ token, role: newUser.role });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .status(201)
+      .json({ role: newUser.role });
   } catch (err) {
     console.error("Client register error:", err);
     res.status(500).json({ message: "Registration failed" });
@@ -142,7 +159,15 @@ const registerCompany = async (req, res) => {
     };
 
     const token = generateToken(payload);
-    res.status(201).json({ token, role: newUser.role });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .status(201)
+      .json({ role: newUser.role });
   } catch (err) {
     console.error("Company register error:", err);
     res.status(500).json({ message: "Registration failed" });
@@ -169,7 +194,15 @@ const loginCompany = async (req, res) => {
   };
 
   const token = generateToken(payload);
-  res.status(200).json({ token, role: user.role });
+  res
+    .cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
+    .status(200)
+    .json({ role: user.role });
 };
 
 // ---------- ADMIN LOGIN ----------
@@ -189,7 +222,15 @@ const loginAdmin = async (req, res) => {
   };
 
   const token = generateToken(payload);
-  res.status(200).json({ token, role: user.role });
+  res
+    .cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
+    .status(200)
+    .json({ role: user.role });
 };
 
 module.exports = {

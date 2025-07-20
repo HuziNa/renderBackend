@@ -21,19 +21,17 @@ const groundSchema = new mongoose.Schema(
     },
     description: String,
     location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point",
-        required: true,
-      },
-      coordinates: {
-        type: [Number], // Format: [longitude, latitude]
-        required: true,
-      },
+      // type: {
+      //   type: String,
+      //   enum: ["Point"],
+      //   default: "Point",
+      // },
+      // coordinates: {
+      //   type: [Number], // Format: [longitude, latitude]
+      // },
       address: String,
       city: String,
-      area: String,
+      //area: String,
     },
     capacity: Number,
     amenities: [String],
@@ -45,7 +43,7 @@ const groundSchema = new mongoose.Schema(
 );
 
 groundSchema.index({ isActive: 1 });
-groundSchema.index({ location: '2dsphere' });
+//groundSchema.index({ location: '2dsphere' });
 
 
 module.exports = mongoose.model("Ground", groundSchema);

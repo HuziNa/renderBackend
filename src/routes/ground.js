@@ -9,7 +9,7 @@ router.post(
   "/add",
   verifyToken,
   authorizeRoles("company"),
-  checkCompanyApproval,
+  //checkCompanyApproval,
   addGround
 );
 
