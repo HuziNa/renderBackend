@@ -10,6 +10,23 @@ const cors = require("cors");
 const { verifyToken } = require("./middleware/authMiddleware"); // for protected routes
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://sports-booking-frontend-sage.vercel.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin 
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 // deleting the old slots and making new ones 
 const cron = require("node-cron");
 const { updateSlotsDaily } = require("./controllers/slotTemplateController");
@@ -26,11 +43,7 @@ app.use(cookieParser());
 
 
 
-app.use(express.json());
-app.use(cors({
-  origin: "https://sports-booking-frontend-sage.vercel.app", // only allow this domain
-  credentials: true 
-}));
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
