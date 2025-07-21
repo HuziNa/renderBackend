@@ -9,25 +9,31 @@ const bookingRoutes = require("./routes/booking");
 const cors = require("cors");
 const { verifyToken } = require("./middleware/authMiddleware"); // for protected routes
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+// new shit for the cookie system
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://sports-booking-frontend-sage.vercel.app"
+  "https://sports-booking-frontend-sage.vercel.app",
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin 
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
-// deleting the old slots and making new ones 
+// deleting the old slots and making new ones
 const cron = require("node-cron");
 const { updateSlotsDaily } = require("./controllers/slotTemplateController");
 
@@ -36,27 +42,17 @@ cron.schedule("0 0 * * *", async () => {
   await updateSlotsDaily();
 });
 
-
-// new shit for the cookie system 
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
-
-
-
-
-
-app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", verifyToken, bookingRoutes);
 app.use("/api/dashboard", verifyToken, dashboardRoutes);
 app.use("/api/booking", require("./routes/booking"));
-// predadding sports 
+// predadding sports
 const sportRoutes = require("./routes/sport");
 app.use("/api/sports", sportRoutes);
 // adding grounds
 const groundRoutes = require("./routes/ground");
 app.use("/api/grounds", groundRoutes);
-// creating slot template 
+// creating slot template
 const slotTemplateRoutes = require("./routes/slotTemplate");
 app.use("/api/slot-template", slotTemplateRoutes);
 // for getting the slots for a ground and a specific date
@@ -64,7 +60,7 @@ app.use("/api/slots", require("./routes/slots"));
 // for booking depending on the specific user
 app.use("/api/booking", require("./routes/booking"));
 
-// for the cooldown function of the bookings 
+// for the cooldown function of the bookings
 const expireBookings = require("./jobs/expireBookings");
 setInterval(() => {
   expireBookings();
@@ -73,7 +69,7 @@ setInterval(() => {
 // getting the bookings of a compnay
 app.use("/api/company/bookings", require("./routes/companyBookings"));
 
-// admin company management 
+// admin company management
 app.use("/api/admin/companies", require("./routes/adminCompanyRoutes"));
 
 app.use("/api/user", require("./routes/userBookings"));
@@ -108,7 +104,7 @@ app.use("/api/grounds", require("./routes/LatestgroundRoutes"));
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("✅ MongoDB connected");
@@ -116,7 +112,7 @@ mongoose
     console.log({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
-      user: process.env.EMAIL_USER
+      user: process.env.EMAIL_USER,
     });
     const PORT = process.env.PORT || 5000; // ✅ Dynamic for Render
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
