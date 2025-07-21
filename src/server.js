@@ -14,6 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+app.use(express.json());
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://sports-booking-frontend-sage.vercel.app",
@@ -64,7 +66,7 @@ app.use("/api/booking", require("./routes/booking"));
 const expireBookings = require("./jobs/expireBookings");
 setInterval(() => {
   expireBookings();
-}, 15 * 60 * 1000); // runs every 15 minutes
+},  60 * 1000); // runs every 15 minutes
 
 // getting the bookings of a compnay
 app.use("/api/company/bookings", require("./routes/companyBookings"));
