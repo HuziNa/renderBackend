@@ -4,6 +4,7 @@ const { User, Company } = require("../models");
 const supabase = require("../utils/supabase");
 const jwt = require("jsonwebtoken");
 
+
 const supabaseCallback = async (req, res) => {
   const { access_token } = req.query;
 
@@ -14,7 +15,7 @@ const supabaseCallback = async (req, res) => {
   const { data: userData, error } = await supabase.auth.getUser(access_token);
 
   if (error || !userData?.user) {
-    return res.status(401).json({ message: "Failed to get Supabase user" });
+    return res.status(401).json({ message: "Failed to get Supabase user", error });
   }
 
   const { email, user_metadata } = userData.user;
@@ -38,12 +39,22 @@ const supabaseCallback = async (req, res) => {
     id: user._id,
     role: user.role,
     email: user.email,
+    name: user.name,
   };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-  res.redirect(`http://localhost:3000/oauth-success?token=${token}`);
+  res
+    .cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None", // or "Lax" if testing locally without HTTPS
+      maxAge: 60 * 60 * 1000, // 1 hour
+    })
+    .status(200)
+    .json({ message: "Login successful", user: payload });
 };
+
 
 // ---------- GUEST LOGIN ----------
 const guestLogin = async (req, res) => {

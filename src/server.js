@@ -103,6 +103,12 @@ app.use("/api/reviews", require("./routes/reviewRoutes"));
 // getting the latest grounds for the whats new page and also the newest and seacrh by grounds
 app.use("/api/grounds", require("./routes/LatestgroundRoutes"));
 
+app.use('/api', require("./routes/supabaseRoutes"));
+
+app.use('/api', require("./routes/sendTempPasswordEmail"));
+
+const path = require("path");
+app.use(express.static(path.join(__dirname, '../public')));
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
