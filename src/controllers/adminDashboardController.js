@@ -39,3 +39,13 @@ exports.getAdminDashboardStats = async (req, res) => {
   }
 };
 
+// users info 
+exports.getAllUserSummaries = async (req, res) => {
+  try {
+    const users = await User.find({}, 'name email role isActive'); // Only select needed fields
+    res.status(200).json(users);
+  } catch (err) {
+    console.error("Error fetching user summaries:", err);
+    res.status(500).json({ message: "Failed to fetch user data" });
+  }
+};
