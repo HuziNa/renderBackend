@@ -3,11 +3,13 @@ const Ground = require('../models/Ground');
 const Company = require('../models/Company');
 const User = require('../models/User');
 const { sendTemplatedEmail } = require('../services/notificationService');
+const supabase = require('../utils/supabase');
 
 exports.uploadPaymentProof = async (req, res) => {
   try {
     const bookingId = req.params.bookingId;
-    const file = req.file; // from multer
+    const file = req.file;
+
     if (!file) return res.status(400).json({ message: "No file uploaded." });
 
     const booking = await Booking.findById(bookingId);
@@ -17,12 +19,34 @@ exports.uploadPaymentProof = async (req, res) => {
     const company = await Company.findById(ground.company._id);
     const companyUser = await User.findById(company.user._id);
 
-    // Update booking status or store proof path if needed
-    booking.payment.proof = file.path;
+    // Generate unique filename
+    const timestamp = Date.now();
+    const filename = `${bookingId}_${timestamp}_${file.originalname}`;
+
+    // Upload file to Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('paymentproofs')
+      .upload(`proofs/${filename}`, file.buffer, {
+        contentType: file.mimetype,
+      });
+
+    if (error) {
+      console.error('Supabase upload error:', error);
+      return res.status(500).json({ message: "Error uploading to cloud storage." });
+    }
+
+    // Get public URL
+    const { data: publicURLData } = supabase.storage
+      .from('paymentproofs')
+      .getPublicUrl(`proofs/${filename}`);
+
+    const fileURL = publicURLData.publicUrl;
+
+    // Save to booking
     booking.payment.status = "proof_uploaded";
     await booking.save();
 
-    // Send email to company with attachment
+    // Send email
     await sendTemplatedEmail({
       templateName: "paymentProofUploaded.html",
       to: companyUser.email,
@@ -41,7 +65,7 @@ exports.uploadPaymentProof = async (req, res) => {
       attachments: [
         {
           filename: file.originalname,
-          path: file.path
+          path: fileURL // ← Public Supabase URL
         }
       ]
     });

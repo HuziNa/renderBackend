@@ -1,20 +1,10 @@
 const multer = require("multer");
-const path = require("path");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/paymentProofs/"); // make sure this exists or create on startup
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, `proof-${Date.now()}${ext}`);
-  },
-});
+const storage = multer.memoryStorage(); // Save files in memory, not disk
 
 const fileFilter = (req, file, cb) => {
-  // Accept images or pdfs
   const allowedTypes = /jpeg|jpg|png|pdf/;
-  const ext = path.extname(file.originalname).toLowerCase();
+  const ext = file.originalname.toLowerCase();
   if (allowedTypes.test(ext)) {
     cb(null, true);
   } else {
@@ -22,7 +12,4 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-module.exports = multer({
-  storage,
-  fileFilter
-});
+module.exports = multer({ storage, fileFilter });
