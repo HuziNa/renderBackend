@@ -8,8 +8,7 @@ const authorizeRoles = require("../middleware/roleMiddleware");
 router.get(
   "/search",
   verifyToken,
-  authorizeRoles("company"),
-  checkCompanyApproval,
+  authorizeRoles("client"),
   getGroundsByCityAndSport
 );
 
