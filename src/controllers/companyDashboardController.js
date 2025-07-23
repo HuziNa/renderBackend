@@ -163,6 +163,7 @@ exports.getCompanyGroundsSummary = async (req, res) => {
       return {
         groundName: ground.name,
         city: ground.location.city,
+        address: ground.location.address,
         sport: ground.sport.name,
         totalBookings,
         totalRevenue
