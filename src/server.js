@@ -66,7 +66,7 @@ app.use("/api/booking", require("./routes/booking"));
 const expireBookings = require("./jobs/expireBookings");
 setInterval(() => {
   expireBookings();
-}, 15 * 60 * 1000); // runs every 15 minutes
+},  60 * 1000); // runs every 15 minutes
 
 // getting the bookings of a compnay
 app.use("/api/company/bookings", require("./routes/companyBookings"));

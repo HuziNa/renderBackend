@@ -1,11 +1,11 @@
-// const jwt = require("jsonwebtoken");
-// const { createClient } = require("@supabase/supabase-js");
-// const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const { createClient } = require("@supabase/supabase-js");
+const User = require("../models/User");
 
-// const supabase = createClient(
-//   "https://qhsfxcesuhbpvhquuzod.supabase.co",
-//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoc2Z4Y2VzdWhicHZocXV1em9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwNzcxNjQsImV4cCI6MjA2NzY1MzE2NH0.fS-T2lJGSpc8OWrOADjrpg8E-ZwX0AcBVxBxnrJ0KbY"
-// );
+const supabase = createClient(
+  "https://qhsfxcesuhbpvhquuzod.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoc2Z4Y2VzdWhicHZocXV1em9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwNzcxNjQsImV4cCI6MjA2NzY1MzE2NH0.fS-T2lJGSpc8OWrOADjrpg8E-ZwX0AcBVxBxnrJ0KbY"
+);
 
 // const supabaseCallback = async (req, res) => {
 //   const { access_token } = req.query;
