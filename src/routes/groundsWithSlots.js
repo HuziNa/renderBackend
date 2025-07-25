@@ -6,6 +6,7 @@ const authorizeRoles = require("../middleware/roleMiddleware");
 
 
 
-router.get("/available", verifyToken,authorizeRoles("client"),getGroundsWithSlots);
+//router.get("/available", verifyToken,authorizeRoles("client"),getGroundsWithSlots);
 
+router.get('/with-slots',getGroundsWithSlots);
 module.exports = router;

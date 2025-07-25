@@ -11,43 +11,56 @@ const getGroundsWithSlots = async (req, res) => {
       return res.status(400).json({ message: "City, sportName, and date are required" });
     }
 
-    // Validate date format
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       return res.status(400).json({ message: "Date must be in YYYY-MM-DD format" });
     }
 
-    // Convert date for query
     const startDate = new Date(date);
     const endDate = new Date(date);
     endDate.setDate(endDate.getDate() + 1);
 
-    // Step 1: Find all grounds in city with given sport
+    // Step 1: Find relevant grounds
     const grounds = await Ground.find({
       "location.city": city,
       "sport.name": sportName,
       isActive: true
-    }).select("_id name company location capacity amenities");
+    }).select("_id name location sport company capacity amenities");
 
     if (!grounds.length) {
-      return res.status(200).json({ message: "No grounds found", grounds: [] });
+      return res.status(200).json([]);
     }
 
-    // Step 2: For each ground, fetch slots for that date
-    const results = [];
-    for (const ground of grounds) {
-      const slots = await Slot.find({
-        "ground._id": ground._id,
-        date: { $gte: startDate, $lt: endDate },
-        isActive: true
-      }).sort({ startTime: 1 });
+    const groundIds = grounds.map(g => g._id);
 
-      results.push({
-        ...ground.toObject(),
-        slots
+    // Step 2: Find all active slots for these grounds on that date
+    const slots = await Slot.find({
+      "ground._id": { $in: groundIds },
+      date: { $gte: startDate, $lt: endDate },
+      isActive: true
+    }).select("_id ground startTime endTime price");
+
+    // Step 3: Group slots by ground._id
+    const slotMap = {};
+    for (const slot of slots) {
+      const groundId = slot.ground._id.toString();
+      if (!slotMap[groundId]) {
+        slotMap[groundId] = [];
+      }
+      slotMap[groundId].push({
+        _id: slot._id,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        price: slot.price
       });
     }
 
-    res.status(200).json({ grounds: results });
+    // Step 4: Attach slots to each ground
+    const result = grounds.map(ground => ({
+      ...ground.toObject(),
+      slots: slotMap[ground._id.toString()] || []
+    }));
+
+    res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching grounds with slots:", error);
     res.status(500).json({ message: "Internal server error" });
