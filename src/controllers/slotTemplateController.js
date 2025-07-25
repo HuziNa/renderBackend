@@ -76,7 +76,14 @@ const generateSlotsFromTemplate = async ({ template, ground, company }) => {
 const createSlotTemplate = async (req, res) => {
   try {
     const userId = req.user?.id;
-    const { weekdays, startTime, endTime, slotDurationMinutes, pricePerSlot, groundId } = req.body;
+    const {
+      weekdays,// array
+      startTime,
+      endTime,
+      slotDurationMinutes,
+      pricePerSlot,
+      groundId,
+    } = req.body;
 
     const company = await Company.findOne({ "user._id": userId });
     if (!company) return res.status(404).json({ message: "Company not found" });
@@ -138,15 +145,19 @@ const updateSlotsDaily = async () => {
   }
 };
 
-
 // When a template is edited
 const updateSlotTemplate = async (req, res) => {
   try {
     const templateId = req.params.templateId;
     const updatedData = req.body;
 
-    const template = await SlotTemplate.findByIdAndUpdate(templateId, updatedData, { new: true });
-    if (!template) return res.status(404).json({ message: "Template not found" });
+    const template = await SlotTemplate.findByIdAndUpdate(
+      templateId,
+      updatedData,
+      { new: true }
+    );
+    if (!template)
+      return res.status(404).json({ message: "Template not found" });
 
     await Slot.deleteMany({ template: template._id });
 
@@ -160,6 +171,8 @@ const updateSlotTemplate = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
 
 module.exports = {
   createSlotTemplate,
