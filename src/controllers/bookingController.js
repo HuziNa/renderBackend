@@ -83,6 +83,7 @@ const createBooking = async (req, res) => {
       payment: {
         status: "pending",
         expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+        amount: slot.price
       },
     };
 
