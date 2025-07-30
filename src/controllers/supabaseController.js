@@ -111,4 +111,6 @@ const supabaseCallback = async (req, res) => {
   res.redirect("https://sports-booking-frontend-sage.vercel.app");
 };
 
+
+
 module.exports = { supabaseCallback };
