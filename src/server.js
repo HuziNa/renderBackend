@@ -89,7 +89,11 @@ app.use("/api/admin/dashboard", require("./routes/adminDashboard"));
 app.use("/api/user/update", require("./routes/userRoutes"));
 
 // payment proof
-app.use("/api/payment-proof", require("./routes/paymentProofRoutes"));
+//app.use("/api/payment-proof", require("./routes/paymentProofRoutes"));
+const paymentProofRoutes = require('./routes/paymentProofRoutes'); // Adjust path as needed
+
+// Register the routes
+app.use('/api/payment-proof', paymentProofRoutes);
 
 // this is the api for getting the grounds from sport, location and the date
 app.use("/api/grounds", require("./routes/groundsWithSlots"));
