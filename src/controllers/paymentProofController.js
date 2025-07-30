@@ -55,6 +55,7 @@ exports.uploadPaymentProof = async (req, res) => {
         companyName: company.companyName,
         userName: booking.isGuest ? booking.guestInfo?.name : booking.user?.name,
         bookingId: booking.bookingId,
+        amount: booking.payment.amount || booking.totalAmount || 0,
       },
       type: "payment_proof_uploaded",
       title: "Payment Proof Uploaded",
