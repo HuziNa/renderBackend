@@ -9,44 +9,56 @@ exports.uploadPaymentProof = async (req, res) => {
   try {
     const bookingId = req.params.bookingId;
     const file = req.file;
-
+    
+    console.log('Received bookingId:', bookingId); // Debug log
+    console.log('Received file:', file ? file.originalname : 'No file'); // Debug log
+    
     if (!file) return res.status(400).json({ message: "No file uploaded." });
-
+    
+    // Find booking by MongoDB _id, not bookingId field
     const booking = await Booking.findById(bookingId);
-    if (!booking) return res.status(404).json({ message: "Booking not found." });
-
-    const ground = await Ground.findById(booking.ground);
-    const company = await Company.findById(ground.company._id);
-    const companyUser = await User.findById(company.user._id);
-
+    if (!booking) {
+      console.log('Booking not found for ID:', bookingId); // Debug log
+      return res.status(404).json({ message: "Booking not found." });
+    }
+    
+    const ground = await Ground.findById(booking.ground).populate('company');
+    if (!ground) {
+      return res.status(404).json({ message: "Ground not found." });
+    }
+    
+    const company = ground.company;
+    const companyUser = await User.findById(company.user);
+    
     // Generate unique filename
     const timestamp = Date.now();
     const filename = `${bookingId}_${timestamp}_${file.originalname}`;
-
+    
     // Upload file to Supabase Storage
     const { data, error } = await supabase.storage
       .from('paymentproofs')
       .upload(`proofs/${filename}`, file.buffer, {
         contentType: file.mimetype,
       });
-
+    
     if (error) {
       console.error('Supabase upload error:', error);
       return res.status(500).json({ message: "Error uploading to cloud storage." });
     }
-
+    
     // Get public URL
     const { data: publicURLData } = supabase.storage
       .from('paymentproofs')
       .getPublicUrl(`proofs/${filename}`);
-
+    
     const fileURL = publicURLData.publicUrl;
-
+    
     // Save to booking
     booking.payment.status = "proof_uploaded";
+    booking.payment.proofUrl = fileURL; // Save the proof URL
     await booking.save();
-
-    // Send email
+    
+    // Send email to company owner
     await sendTemplatedEmail({
       templateName: "paymentProofUploaded.html",
       to: companyUser.email,
@@ -66,15 +78,18 @@ exports.uploadPaymentProof = async (req, res) => {
       attachments: [
         {
           filename: file.originalname,
-          path: fileURL // ← Public Supabase URL
+          path: fileURL
         }
       ]
     });
-
-    res.json({ message: "Payment proof uploaded and emailed to company." });
-
+    
+    res.json({ 
+      message: "Payment proof uploaded successfully.",
+      booking: booking
+    });
+    
   } catch (err) {
     console.error("Error uploading payment proof:", err);
-    res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error.", error: err.message });
   }
 };
