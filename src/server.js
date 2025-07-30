@@ -117,6 +117,18 @@ app.use(express.static(path.join(__dirname, "../public")));
 const revenueRoutes = require("./routes/revenueRoutes");
 app.use("/api/company", revenueRoutes);
 
+// Error handling middleware (add this after all routes)
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File too large' });
+    }
+  }
+  
+  console.error('Unhandled error:', error);
+  res.status(500).json({ message: 'Internal server error' });
+});
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
