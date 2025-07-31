@@ -33,6 +33,6 @@ const upload = multer({
 });
 
 // Payment proof upload route
-router.post('/upload-payment-proof/:bookingId', upload.single('file'), uploadPaymentProof);
+router.post('/upload-payment-proof/:bookingId', upload.single('proof'), uploadPaymentProof);
 
 module.exports = router;
