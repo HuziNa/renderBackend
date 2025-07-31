@@ -89,7 +89,11 @@ app.use("/api/admin/dashboard", require("./routes/adminDashboard"));
 app.use("/api/user/update", require("./routes/userRoutes"));
 
 // payment proof
-app.use("/api/payment-proof", require("./routes/paymentProofRoutes"));
+//app.use("/api/payment-proof", require("./routes/paymentProofRoutes"));
+const paymentProofRoutes = require('./routes/paymentProofRoutes'); // Adjust path as needed
+
+// Register the routes
+app.use('/api/payment-proof', paymentProofRoutes);
 
 // this is the api for getting the grounds from sport, location and the date
 app.use("/api/grounds", require("./routes/groundsWithSlots"));
@@ -107,11 +111,26 @@ app.use("/api", require("./routes/supabaseRoutes"));
 
 app.use("/api", require("./routes/sendTempPasswordEmail"));
 
+const slotRoutes = require("./routes/slotRoutes");
+app.use("/api/slots", slotRoutes);
+
 const path = require("path");
 app.use(express.static(path.join(__dirname, "../public")));
 
 const revenueRoutes = require("./routes/revenueRoutes");
 app.use("/api/company", revenueRoutes);
+
+// Error handling middleware (add this after all routes)
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File too large' });
+    }
+  }
+  
+  console.error('Unhandled error:', error);
+  res.status(500).json({ message: 'Internal server error' });
+});
 
 mongoose
   .connect(process.env.MONGO_URI, {
