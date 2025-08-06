@@ -100,12 +100,19 @@ const supabaseCallback = async (req, res) => {
     expiresIn: "1h",
   });
 
-  res.cookie("token", token, {
+  res
+  .cookie("token", token, {
     httpOnly: true,
-    secure: true, // ✅ because it's on HTTPS (render)
+    secure: true,
     sameSite: "None",
-    maxAge: 3600000,
-  });
+    maxAge: 60 * 60 * 1000,
+  })
+  .status(200)
+  .json({
+    message: "Login successful",
+    user: payload,
+    token,  // ✅ Add this line! // added for google 7:49 
+  });
 
   // ✅ Redirect to your deployed frontend
   res.redirect("https://sports-booking-frontend-sage.vercel.app");
