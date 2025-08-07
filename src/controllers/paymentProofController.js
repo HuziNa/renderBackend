@@ -84,7 +84,6 @@ exports.uploadPaymentProof = async (req, res) => {
 
     // Update booking
     booking.payment.status = "proof_uploaded";
-    booking.payment.proofUrl = fileURL;
     booking.status = "pending-confirmation"; // added this for the payment page
     await booking.save();
 
