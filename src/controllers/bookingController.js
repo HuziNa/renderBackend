@@ -55,6 +55,7 @@ const createBooking = async (req, res) => {
 
     const companyOwner = await User.findById(company.user._id);
     console.log(" Company Owner:", companyOwner);
+    console.log(" User", user);
 
     if (!companyOwner) {
       return res.status(404).json({ message: "Company owner not found" });
@@ -96,7 +97,7 @@ const createBooking = async (req, res) => {
       console.log(user.name);
       bookingData.isGuest = false;
       userName = user.name;
-      userEmail = user.email || user.google?.email;
+      userEmail = user.email;
     } else if (guestInfo) {
       bookingData.guestInfo = guestInfo;
       bookingData.isGuest = true;

@@ -118,10 +118,6 @@ const confirmBookingByCompany = async (req, res) => {
 };
 
 
-
-
-
-
 module.exports = {
   getAllBookings,
   confirmBookingByCompany,
