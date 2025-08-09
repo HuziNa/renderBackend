@@ -21,12 +21,16 @@
 //   verifyToken
 // };
 
-
-// new cookie system 
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
-  const token = req.cookies.token;
+  // Try cookies first
+  let token = req.cookies?.token;
+
+  // If no cookie token, try Authorization header
+  if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+    token = req.headers.authorization.split(" ")[1];
+  }
 
   if (!token) {
     return res.status(401).json({ message: "Not authenticated" });
@@ -34,7 +38,7 @@ const verifyToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = decoded; // This will contain id, role, email
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token" });
@@ -44,3 +48,4 @@ const verifyToken = (req, res, next) => {
 module.exports = {
   verifyToken
 };
+

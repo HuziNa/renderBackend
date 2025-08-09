@@ -197,7 +197,8 @@ exports.getAllCompanyBookings = async (req, res) => {
       slotDate: b.slot?.date,
       startTime: b.slot?.startTime,
       endTime: b.slot?.endTime,
-      status: b.status
+      status: b.status,
+      bookingId: b.bookingId
     }));
 
     res.json(formatted);

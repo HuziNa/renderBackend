@@ -96,7 +96,7 @@ const createBooking = async (req, res) => {
       console.log(user.name);
       bookingData.isGuest = false;
       userName = user.name;
-      userEmail = user.email;
+      userEmail = user.email || user.google?.email;
     } else if (guestInfo) {
       bookingData.guestInfo = guestInfo;
       bookingData.isGuest = true;
