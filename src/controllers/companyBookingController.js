@@ -38,7 +38,7 @@ const confirmBookingByCompany = async (req, res) => {
 
     // 1. Find and update the booking
     const updatedBooking = await Booking.findOneAndUpdate(
-      { bookingId, status: "pending" },
+      { bookingId, status: "pending-confirmation" },
       { $set: { status: "confirmed", "payment.status": "paid" } },
       { new: true }
     );
