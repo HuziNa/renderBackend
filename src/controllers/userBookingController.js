@@ -1,4 +1,4 @@
-// for getting all the bookings of a user and cancelling a booking with its id 
+// for getting all the bookings of a user and cancelling a booking with its id
 const Booking = require("../models/Booking");
 const Slot = require("../models/Slot");
 
@@ -24,22 +24,17 @@ const getMyBookings = async (req, res) => {
 const cancelMyBooking = async (req, res) => {
   try {
     const userId = req.user?.id;
-    const bookingIdParam = req.params.bookingId;
+    const bookingObjectId = req.params.bookingId; // Now this is the MongoDB _id
 
-    // Convert to number
-    const bookingId = Number(bookingIdParam);
-
-    if (isNaN(bookingId)) {
-      return res
-        .status(400)
-        .json({ message: "Invalid booking ID. Must be a number." });
+    // Validate ObjectId
+    if (!bookingObjectId || !bookingObjectId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid booking ObjectId." });
     }
 
-    // Find booking by bookingId and user
+    // Find booking by _id and user
     const booking = await Booking.findOne({
-      bookingId,
+      _id: bookingObjectId,
       "user._id": userId,
-      status: "pending",
     });
 
     if (!booking) {
