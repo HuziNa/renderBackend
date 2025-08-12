@@ -13,8 +13,7 @@ router.post("/user", verifyToken,
   router.post("/guest", verifyToken,
   authorizeRoles("guest"), createBooking); // allows guest too
  
-router.post('/booking/guest', verifyToken,
-  authorizeRoles("guest"), createGuestBooking);
+router.post('/booking/guest',  createGuestBooking);
 
 
 // end

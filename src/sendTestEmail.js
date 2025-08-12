@@ -10,7 +10,7 @@ async function runTest() {
     });
 
     console.log("Connected to DB ");
-
+// this is my name
     const result = await sendTemplatedEmail({
       templateName: 'bookingConfirmation.html',
       to: 'huziproyt@gmail.com', // your test email
