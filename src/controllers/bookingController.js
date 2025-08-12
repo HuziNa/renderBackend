@@ -221,7 +221,6 @@ const createGuestBooking = async (req, res) => {
       phone,
       groundId,
       slotId,
-      company,
       date
     });
 
