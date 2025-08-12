@@ -188,4 +188,56 @@ const createBooking = async (req, res) => {
   }
 };
 
-module.exports = { createBooking };
+
+// add this in the route/booking.js
+// router.post('/booking/guest', bookingController.createGuestBooking);
+// and in controllers/bookingController.js add this
+
+
+const createGuestBooking = async (req, res) => {
+  try {
+    const { name, email, phone, groundId, slotId, company, date } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !phone || !groundId || !slotId || !company || !date) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    // Check if slot is still available
+    const slot = await Slot.findById(slotId);
+    if (!slot) {
+      return res.status(404).json({ message: 'Slot not found.' });
+    }
+    if (!slot.isActive) {
+      return res.status(400).json({ message: 'Slot already booked.' });
+    }
+
+    // Create booking
+    const booking = new Booking({
+      userId: null,         // No logged-in user
+      isGuest: true,        // Mark as guest booking
+      name,
+      email,
+      phone,
+      groundId,
+      slotId,
+      company,
+      date
+    });
+
+    await booking.save();
+
+    // Mark slot as inactive
+    slot.isActive = false;
+    await slot.save();
+
+    return res.status(201).json({
+      message: 'Guest booking successful.',
+      booking
+    });
+  } catch (error) {
+    console.error('Error creating guest booking:', error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+module.exports = { createBooking, createGuestBooking };

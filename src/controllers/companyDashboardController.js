@@ -198,7 +198,8 @@ exports.getAllCompanyBookings = async (req, res) => {
       startTime: b.slot?.startTime,
       endTime: b.slot?.endTime,
       status: b.status,
-      bookingId: b.bookingId
+      bookingId: b.bookingId,
+      paymentProofUrl: b.payment?.proofUrl || null
     }));
 
     res.json(formatted);
