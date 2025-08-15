@@ -196,10 +196,10 @@ const createBooking = async (req, res) => {
 
 const createGuestBooking = async (req, res) => {
   try {
-    const { name, email, phone, groundId, slotId, company, date } = req.body;
+    const { name, email, phone, groundId, slotId, date } = req.body;
 
-    // Validate required fields
-    if (!name || !email || !phone || !groundId || !slotId || !company || !date) {
+    // Validate required fields (remove company from required list)
+    if (!name || !email || !phone || !groundId || !slotId || !date) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
 
@@ -212,6 +212,17 @@ const createGuestBooking = async (req, res) => {
       return res.status(400).json({ message: 'Slot already booked.' });
     }
 
+    // Find ground and company automatically
+    const ground = await Ground.findById(groundId);
+    if (!ground) {
+      return res.status(404).json({ message: 'Ground not found.' });
+    }
+
+    const company = await Company.findById(ground.company);
+    if (!company) {
+      return res.status(404).json({ message: 'Company not found.' });
+    }
+
     // Create booking
     const booking = new Booking({
       userId: null,         // No logged-in user
@@ -221,6 +232,7 @@ const createGuestBooking = async (req, res) => {
       phone,
       groundId,
       slotId,
+      company: company._id, // Found from ground
       date
     });
 
@@ -239,4 +251,6 @@ const createGuestBooking = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
+
 module.exports = { createBooking, createGuestBooking };
