@@ -1,23 +1,22 @@
-
 // routes/booking.js
 const express = require("express");
 const router = express.Router();
-const { createBooking , createGuestBooking} = require("../controllers/bookingController");
+const { createBooking, createGuestBooking } = require("../controllers/bookingController");
 const { verifyToken } = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/roleMiddleware");
-const optionalAuth = require("../middleware/auth.optional");
 
-router.post("/user", verifyToken,
-  authorizeRoles("client"), createBooking); // allows guest too
+// ✅ Route for authenticated users (clients)
+router.post(
+  "/user",
+  verifyToken,
+  authorizeRoles("client"),
+  createBooking
+);
 
-  router.post("/guest", verifyToken,
-  authorizeRoles("guest"), createBooking); // allows guest too
- 
-router.post('/booking/guest',  createGuestBooking);
-
-
-// end
+// ✅ Route for guests (no token required)
+router.post(
+  "/guest",
+  createGuestBooking
+);
 
 module.exports = router;
-
-
